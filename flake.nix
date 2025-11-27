@@ -34,6 +34,9 @@
           pkgs.home-manager
           pkgs.fd
           pkgs.tree
+          pkgs.powertop
+          pkgs.fastfetch
+          pkgs.zed-editor
         ];
       };
 

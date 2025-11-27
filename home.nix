@@ -27,5 +27,14 @@
     };
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
+    enableCompletion = true;
   };
+  programs.zsh.shellAliases = {
+    cat = "bat";
+    ls = "eza";
+    grep = "rg";
+  };
+  programs.bat.enable = true;
+  programs.eza.enable = true;
+  programs.ripgrep.enable = true;
 }

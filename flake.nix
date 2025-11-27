@@ -27,7 +27,6 @@
           pkgs.wget
           pkgs.gnupg
           pkgs.pinentry-qt
-          pkgs.neovim
           pkgs.gh
           pkgs.doas
           pkgs.direnv

@@ -13,6 +13,16 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  security.pam.u2f = {
+    enable = true;
+    settings.cue = true;       # Makes it show a “Touch your YubiKey” prompt
+    control = "sufficient";  # Block access if U2F fails
+  };
+
+  security.pam.services.doas.u2fAuth = true;
+  security.doas.enable = true;
+  security.pam.services.doas.fprintAuth = false;
+
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 

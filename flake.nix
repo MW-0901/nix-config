@@ -22,7 +22,7 @@
 	  pkgs.pinentry-qt
 	  pkgs.neovim
 	  pkgs.gh
-	  pkgs.vimPlugins.LazyVim
+	  pkgs.doas
         ];
       };
     };

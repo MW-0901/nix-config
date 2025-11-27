@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  services.power-profiles-daemon.enable = lib.mkForce false;
+
   # Power management
   powerManagement = {
     enable = true;
@@ -19,22 +21,22 @@
       CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
       CPU_BOOST_ON_AC = 1;
       CPU_BOOST_ON_BAT = 0;
-      
+
       # Platform
       PLATFORM_PROFILE_ON_AC = "performance";
       PLATFORM_PROFILE_ON_BAT = "low-power";
-      
+
       # GPU
       INTEL_GPU_MIN_FREQ_ON_BAT = 300;
       INTEL_GPU_MAX_FREQ_ON_BAT = 800;
-      
+
       # Radio
       WIFI_PWR_ON_BAT = "on";
-      
+
       # USB (exclude YubiKey)
       USB_AUTOSUSPEND = 1;
       USB_DENYLIST = "1050:0407";
-      
+
       # Battery care
       START_CHARGE_THRESH_BAT0 = 75;
       STOP_CHARGE_THRESH_BAT0 = 80;

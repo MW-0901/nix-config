@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./power.nix
+      ./wpilib/wpilib.nix
     ];
   # Bootloader.
   boot.loader.systemd-boot.enable = true;

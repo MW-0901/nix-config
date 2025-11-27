@@ -15,11 +15,15 @@
 
   security.pam.u2f = {
     enable = true;
-    settings.cue = true;       # Makes it show a "Touch your YubiKey" prompt
+    settings.cue = false;
     control = "sufficient";  # Try U2F first, skip password if successful
   };
 
   security.pam.services.doas.u2fAuth = true;
+  security.pam.services.login.u2fAuth = false;
+  security.pam.services.sddm.u2fAuth = false;
+  security.pam.services.kde.u2fAuth = false;
+  security.pam.services.sudo.u2fAuth = false;
   security.doas.enable = true;
   security.pam.services.doas.fprintAuth = false;
 

@@ -18,4 +18,14 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+  programs.zsh = {
+    enable = true;
+    oh-my-zsh = {
+      enable = true;
+      theme = "bira";
+      plugins = [ "git" ];
+    };
+    syntaxHighlighting.enable = true;
+    autosuggestion.enable = true;
+  };
 }

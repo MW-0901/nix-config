@@ -80,6 +80,19 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  fonts = {
+    packages = with pkgs; [
+        hack-font
+        nerd-fonts.hack
+    ];
+
+    fontconfig = {
+        defaultFonts = {
+        monospace = [ "Hack Nerd Font" ];
+        };
+    };
+};
+
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;

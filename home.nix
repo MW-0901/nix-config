@@ -1,10 +1,14 @@
 { config, pkgs, lib, ... }:
 
 {
+
+  imports = [
+    ./programs/neovim.nix
+  ];
   home.activation.xhost = lib.hm.dag.entryAfter ["xserver"] ''
     ${pkgs.xhost}/bin/xhost +local:docker
   '';
-  
+
   # Add this new section for the systemd service
   systemd.user.services.xhost-docker = {
     Unit = {
@@ -12,7 +16,7 @@
       After = [ "graphical-session.target" ];
       PartOf = [ "graphical-session.target" ];
     };
-    
+
     Service = {
       Type = "oneshot";
       ExecStart = "${pkgs.xhost}/bin/xhost +local:docker";
@@ -21,7 +25,7 @@
       Restart = "on-failure";
       RestartSec = "5s";
     };
-    
+
     Install = {
       WantedBy = [ "graphical-session.target" ];
     };

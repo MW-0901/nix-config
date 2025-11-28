@@ -29,8 +29,6 @@
           pkgs.pinentry-qt
           pkgs.gh
           pkgs.doas
-          pkgs.direnv
-          pkgs.nix-direnv
           pkgs.home-manager
           pkgs.fd
           pkgs.tree

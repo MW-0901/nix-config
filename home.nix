@@ -26,6 +26,8 @@
       WantedBy = [ "graphical-session.target" ];
     };
   };
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
 
   # Rest of your existing home.nix configuration
   home.username = "mark";

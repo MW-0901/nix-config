@@ -9,32 +9,12 @@ let
     cd ${config.users.users.mark.home}/config/wpilib
     ${pkgs.docker-compose}/bin/docker-compose up -d
     
-    # Detect cursor size dynamically
-    CURSOR_SIZE="''${XCURSOR_SIZE:-24}"
-    if command -v xrdb &> /dev/null && [ -n "$DISPLAY" ]; then
-      # Try to get cursor size from X resources
-      XRDB_SIZE=$(xrdb -query 2>/dev/null | grep -i "xcursor.size" | cut -f2)
-      if [ -n "$XRDB_SIZE" ]; then
-        CURSOR_SIZE="$XRDB_SIZE"
-      fi
-    fi
+    # Launch VS Code in background and fully detach
+    ${pkgs.docker}/bin/docker exec frc-dev \
+      /home/mark/wpilib/2026/vscode/VSCode-linux-x64/bin/code \
+      --user-data-dir=/home/mark/.wpilib/2026/vscode "$@" >/dev/null 2>&1 &
     
-    # Detect cursor theme
-    CURSOR_THEME="''${XCURSOR_THEME:-default}"
-    
-    # Get DPI if available
-    DPI="''${GDK_DPI_SCALE:-1}"
-    
-    echo "Launching WPILib VS Code with cursor size: $CURSOR_SIZE, theme: $CURSOR_THEME"
-    
-    # Launch VS Code in container with proper environment
-    ${pkgs.docker}/bin/docker exec -it \
-      -e XCURSOR_SIZE="$CURSOR_SIZE" \
-      -e XCURSOR_THEME="$CURSOR_THEME" \
-      -e GDK_SCALE="$DPI" \
-      -e GDK_DPI_SCALE="$DPI" \
-      frc-dev \
-      /home/mark/wpilib/2026/vscode/VSCode-linux-x64/bin/code --user-data-dir=/home/mark/.wpilib/2026/vscode "$@"
+    disown
   '';
 
   # Shell launcher for interactive development
@@ -45,31 +25,8 @@ let
     cd ${config.users.users.mark.home}/config/wpilib
     ${pkgs.docker-compose}/bin/docker-compose up -d
     
-    # Detect cursor size dynamically
-    CURSOR_SIZE="''${XCURSOR_SIZE:-24}"
-    if command -v xrdb &> /dev/null && [ -n "$DISPLAY" ]; then
-      XRDB_SIZE=$(xrdb -query 2>/dev/null | grep -i "xcursor.size" | cut -f2)
-      if [ -n "$XRDB_SIZE" ]; then
-        CURSOR_SIZE="$XRDB_SIZE"
-      fi
-    fi
-    
-    # Detect cursor theme
-    CURSOR_THEME="''${XCURSOR_THEME:-default}"
-    
-    # Get DPI if available
-    DPI="''${GDK_DPI_SCALE:-1}"
-    
-    echo "Entering WPILib development shell..."
-    
-    # Launch interactive shell in container with proper environment
-    ${pkgs.docker}/bin/docker exec -it \
-      -e XCURSOR_SIZE="$CURSOR_SIZE" \
-      -e XCURSOR_THEME="$CURSOR_THEME" \
-      -e GDK_SCALE="$DPI" \
-      -e GDK_DPI_SCALE="$DPI" \
-      frc-dev \
-      bash "$@"
+    # Launch interactive shell in container
+    ${pkgs.docker}/bin/docker exec -it frc-dev bash "$@"
   '';
 
   # Desktop entry for KDE/Plasma
@@ -78,7 +35,7 @@ let
     desktopName = "WPILib VS Code";
     comment = "WPILib Development Environment";
     exec = "${wpilibLauncher}/bin/wpilib-code %F";
-    icon = "code";
+    icon = "${config.users.users.mark.home}/wpilib/2026/icons/wpilib-icon-256.png";
     terminal = false;
     type = "Application";
     categories = [ "Development" "IDE" ];

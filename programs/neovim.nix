@@ -13,11 +13,14 @@
       
       vim.languages.nix.enable = true;
       
-      vim.keymaps.telescope-find-files = {
-        mode = "n";
-        key = "<leader>ff";
-        action = "<cmd>Telescope find_files<cr>";
-      };
+      # Keymaps should be a list, not an attribute set
+      vim.keymaps = [
+        {
+          mode = "n";
+          key = "<leader>ff";
+          action = "<cmd>Telescope find_files<cr>";
+        }
+      ];
 
     };
   };

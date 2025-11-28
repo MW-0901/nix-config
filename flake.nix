@@ -7,12 +7,17 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nvf = {
+      url = "github:notashelf/nvf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, nvf, ... }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { 
+      pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
       };
@@ -45,8 +50,8 @@
       # Your NixOS system
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { 
-          globalPackages = self.packages.${system}.default; 
+        specialArgs = {
+          globalPackages = self.packages.${system}.default;
         };
         modules = [
           ./configuration.nix
@@ -55,7 +60,12 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.mark = import ./home.nix;
+            home-manager.users.mark = {
+                imports = [
+                    nvf.homeManagerModules.default
+                    ./home.nix
+                ];
+            };
           }
         ];
       };

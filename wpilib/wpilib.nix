@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   homeDir = config.users.users.mark.home;
@@ -73,32 +78,33 @@ let
     };
   };
 
-
-  mkToolLauncher = name: tool: pkgs.writeShellScriptBin "wpilib-${name}" ''
-    #!/usr/bin/env bash
-
-
-    cd ${homeDir}/config/wpilib
-    ${pkgs.docker-compose}/bin/docker-compose up -d
+  mkToolLauncher =
+    name: tool:
+    pkgs.writeShellScriptBin "wpilib-${name}" ''
+      #!/usr/bin/env bash
 
 
-    ${pkgs.docker}/bin/docker exec frc-dev ${tool.exec} "$@" >/dev/null 2>&1 &
-
-    disown
-  '';
+      cd ${homeDir}/config/wpilib
+      ${pkgs.docker-compose}/bin/docker-compose up -d
 
 
-  mkToolDesktop = name: tool: pkgs.makeDesktopItem {
-    name = "wpilib-${name}";
-    desktopName = "WPILib ${tool.name}";
-    comment = tool.comment;
-    exec = "${mkToolLauncher name tool}/bin/wpilib-${name} %F";
-    icon = tool.icon;
-    terminal = false;
-    type = "Application";
-    categories = [ "Development" ];
-  };
+      ${pkgs.docker}/bin/docker exec frc-dev ${tool.exec} "$@" >/dev/null 2>&1 &
 
+      disown
+    '';
+
+  mkToolDesktop =
+    name: tool:
+    pkgs.makeDesktopItem {
+      name = "wpilib-${name}";
+      desktopName = "WPILib ${tool.name}";
+      comment = tool.comment;
+      exec = "${mkToolLauncher name tool}/bin/wpilib-${name} %F";
+      icon = tool.icon;
+      terminal = false;
+      type = "Application";
+      categories = [ "Development" ];
+    };
 
   wpilibCode = pkgs.writeShellScriptBin "wpilib-code" ''
     #!/usr/bin/env bash
@@ -115,7 +121,6 @@ let
     disown
   '';
 
-
   wpilibCodeDesktop = pkgs.makeDesktopItem {
     name = "wpilib-vscode";
     desktopName = "WPILib VS Code";
@@ -124,10 +129,15 @@ let
     icon = "${wpilibDir}/icons/wpilib-icon-256.png";
     terminal = false;
     type = "Application";
-    categories = [ "Development" "IDE" ];
-    mimeTypes = [ "text/plain" "inode/directory" ];
+    categories = [
+      "Development"
+      "IDE"
+    ];
+    mimeTypes = [
+      "text/plain"
+      "inode/directory"
+    ];
   };
-
 
   wpilibShell = pkgs.writeShellScriptBin "wpilib-shell" ''
     #!/usr/bin/env bash
@@ -140,34 +150,31 @@ let
     ${pkgs.docker}/bin/docker exec -it frc-dev bash "$@"
   '';
 
-
   allToolLaunchers = lib.mapAttrsToList mkToolLauncher wpilibTools;
   allToolDesktops = lib.mapAttrsToList mkToolDesktop wpilibTools;
-
 
   stateDir = "/var/lib/wpilib-setup";
   reminderFile = "${stateDir}/installer-reminder-shown";
 
-in {
+in
+{
 
   virtualisation.docker.enable = true;
   users.users.mark.extraGroups = [ "docker" ];
-
 
   environment.systemPackages = [
     wpilibCode
     wpilibCodeDesktop
     wpilibShell
-  ] ++ allToolLaunchers ++ allToolDesktops;
-
+  ]
+  ++ allToolLaunchers
+  ++ allToolDesktops;
 
   environment.pathsToLink = [ "/share/applications" ];
-
 
   systemd.tmpfiles.rules = [
     "d ${stateDir} 0755 root root -"
   ];
-
 
   system.activationScripts.wpilibReminder = lib.stringAfter [ "users" ] ''
 
@@ -210,7 +217,6 @@ in {
       touch "${reminderFile}"
     fi
   '';
-
 
   system.activationScripts.wpilibDockerBuild = lib.stringAfter [ "users" "groups" ] ''
     echo "Building WPILib Docker container..."

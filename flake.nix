@@ -38,6 +38,7 @@
           pkgs.docker-compose
           pkgs.docker-buildx
           pkgs.xhost
+          pkgs.nixfmt
         ];
       };
 

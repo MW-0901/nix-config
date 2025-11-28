@@ -3,8 +3,7 @@
 let
   homeDir = config.users.users.mark.home;
   wpilibDir = "${homeDir}/wpilib/2026";
-  
-  # Define all WPILib tools with their executables and icons
+
   wpilibTools = {
     advantagescope = {
       name = "AdvantageScope";
@@ -27,7 +26,7 @@ let
     shuffleboard = {
       name = "Shuffleboard";
       exec = "${wpilibDir}/tools/Shuffleboard";
-      icon = "${wpilibDir}/icons/glass.png"; # Shuffleboard uses glass icon
+      icon = "${wpilibDir}/icons/glass.png";
       comment = "Modern dashboard for FRC";
     };
     smartdashboard = {
@@ -74,21 +73,21 @@ let
     };
   };
 
-  # Function to create a launcher script for a tool
+
   mkToolLauncher = name: tool: pkgs.writeShellScriptBin "wpilib-${name}" ''
     #!/usr/bin/env bash
-    
-    # Ensure container is running
+
+
     cd ${homeDir}/config/wpilib
     ${pkgs.docker-compose}/bin/docker-compose up -d
-    
-    # Launch tool in background and fully detach
+
+
     ${pkgs.docker}/bin/docker exec frc-dev ${tool.exec} "$@" >/dev/null 2>&1 &
-    
+
     disown
   '';
 
-  # Function to create a desktop entry for a tool
+
   mkToolDesktop = name: tool: pkgs.makeDesktopItem {
     name = "wpilib-${name}";
     desktopName = "WPILib ${tool.name}";
@@ -100,23 +99,23 @@ let
     categories = [ "Development" ];
   };
 
-  # VS Code launcher (special case)
+
   wpilibCode = pkgs.writeShellScriptBin "wpilib-code" ''
     #!/usr/bin/env bash
-    
-    # Ensure container is running
+
+
     cd ${homeDir}/config/wpilib
     ${pkgs.docker-compose}/bin/docker-compose up -d
-    
-    # Launch VS Code in background and fully detach
+
+
     ${pkgs.docker}/bin/docker exec frc-dev \
       ${homeDir}/wpilib/2026/vscode/VSCode-linux-x64/bin/code \
       --user-data-dir=${homeDir}/.wpilib/2026/vscode "$@" >/dev/null 2>&1 &
-    
+
     disown
   '';
 
-  # VS Code desktop entry
+
   wpilibCodeDesktop = pkgs.makeDesktopItem {
     name = "wpilib-vscode";
     desktopName = "WPILib VS Code";
@@ -129,54 +128,54 @@ let
     mimeTypes = [ "text/plain" "inode/directory" ];
   };
 
-  # Shell launcher
+
   wpilibShell = pkgs.writeShellScriptBin "wpilib-shell" ''
     #!/usr/bin/env bash
-    
-    # Ensure container is running
+
+
     cd ${homeDir}/config/wpilib
     ${pkgs.docker-compose}/bin/docker-compose up -d
-    
-    # Launch interactive shell in container
+
+
     ${pkgs.docker}/bin/docker exec -it frc-dev bash "$@"
   '';
 
-  # Generate all tool launchers and desktop entries
+
   allToolLaunchers = lib.mapAttrsToList mkToolLauncher wpilibTools;
   allToolDesktops = lib.mapAttrsToList mkToolDesktop wpilibTools;
 
-  # State file to track if reminder has been shown
+
   stateDir = "/var/lib/wpilib-setup";
   reminderFile = "${stateDir}/installer-reminder-shown";
 
 in {
-  # Enable Docker
+
   virtualisation.docker.enable = true;
   users.users.mark.extraGroups = [ "docker" ];
 
-  # Install all launchers and desktop entries
+
   environment.systemPackages = [
     wpilibCode
     wpilibCodeDesktop
     wpilibShell
   ] ++ allToolLaunchers ++ allToolDesktops;
 
-  # Ensure XDG desktop entries are updated
+
   environment.pathsToLink = [ "/share/applications" ];
 
-  # Create state directory for tracking reminders
+
   systemd.tmpfiles.rules = [
     "d ${stateDir} 0755 root root -"
   ];
 
-  # One-time reminder to install WPILib
+
   system.activationScripts.wpilibReminder = lib.stringAfter [ "users" ] ''
-    # Ensure state directory exists
+
     mkdir -p "${stateDir}"
-    
+
     if [ ! -f "${reminderFile}" ]; then
       cat << 'EOF'
-    
+
     ╔════════════════════════════════════════════════════════════════════════╗
     ║                    WPILib Setup Reminder                               ║
     ╠════════════════════════════════════════════════════════════════════════╣
@@ -206,9 +205,17 @@ in {
     ║    - wpilib-elastic           (Elastic dashboard)                      ║
     ║                                                                        ║
     ╚════════════════════════════════════════════════════════════════════════╝
-    
+
     EOF
       touch "${reminderFile}"
     fi
+  '';
+
+
+  system.activationScripts.wpilibDockerBuild = lib.stringAfter [ "users" "groups" ] ''
+    echo "Building WPILib Docker container..."
+    cd ${homeDir}/config/wpilib
+    ${pkgs.docker-compose}/bin/docker-compose build
+    echo "WPILib Docker container built successfully."
   '';
 }

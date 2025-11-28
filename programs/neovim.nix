@@ -6,11 +6,14 @@
 
     settings = {
       vim.theme.enable = true;
-
+      vim.autocomplete.blink-cmp.enable = true;
       vim.treesitter.enable = true;
-      vim.languages.nix.enable = true;
-      vim.languages.clang.enable = true;
-      vim.languages.rust.enable = true;
+      vim.languages.nix = {
+        lsp = {
+          enable = true;
+        };
+        enable = true;
+      };
       vim.viAlias = true;
       vim.vimAlias = true;
       vim.lsp.enable = true;

@@ -33,10 +33,8 @@ jobs:
     
     - name: Build NixOS configuration
       run: |
-        # Build the system configuration (dry-run, won't actually install)
         nix build .#nixosConfigurations.nixos.config.system.build.toplevel --dry-run
         
-        # Show what would be built
         nix build .#nixosConfigurations.nixos.config.system.build.toplevel --show-trace
     
     - name: Check for evaluation errors

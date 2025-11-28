@@ -44,6 +44,9 @@
           pkgs.docker-buildx
           pkgs.xhost
           pkgs.nixfmt
+	  pkgs.nil
+          pkgs.clang
+          pkgs.clang-tools
         ];
       };
 

@@ -26,6 +26,24 @@ RUN apt-get update && apt-get install -y \
     libdrm2 \
     libxfixes3 \
     libgl1 \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    libegl1 \
+    libegl1-mesa \
+    libgles2 \
+    mesa-utils \
+    libglx0 \
+    libglvnd0 \
+    libglapi-mesa \
+    libxcb1 \
+    libxcb-glx0 \
+    libxcb-dri2-0 \
+    libxcb-dri3-0 \
+    libxcb-present0 \
+    libxcb-sync1 \
+    libxshmfence1 \
+    dbus \
+    dbus-x11 \
  && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -u 1000 -m -s /bin/bash mark
@@ -51,6 +69,8 @@ fi\n' \
 
 ENV ELECTRON_OZONE_PLATFORM_HINT=auto
 ENV OZONE_PLATFORM=auto
+
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
 
 USER mark
 WORKDIR /home/mark

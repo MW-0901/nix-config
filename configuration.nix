@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./optimizations/power.nix
+      ./optimizations/disk.nix
       ./wpilib/wpilib.nix
     ];
   # Bootloader.

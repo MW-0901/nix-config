@@ -20,6 +20,9 @@
     settings.cue = false;
     control = "sufficient";  # Try U2F first, skip password if successful
   };
+  system.userActivationScripts.xhost = ''
+    ${pkgs.xhost}/bin/xhost +local:docker
+  '';
 
   security.pam.services.doas.u2fAuth = true;
   security.pam.services.login.u2fAuth = false;

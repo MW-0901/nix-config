@@ -1,22 +1,38 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
+  home.activation.xhost = lib.hm.dag.entryAfter ["xserver"] ''
+    ${pkgs.xhost}/bin/xhost +local:docker
+  '';
+  
+  # Add this new section for the systemd service
+  systemd.user.services.xhost-docker = {
+    Unit = {
+      Description = "Allow Docker containers to access X server";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.xhost}/bin/xhost +local:docker";
+      RemainAfterExit = true;
+      # Restart if it fails
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+    
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
+  # Rest of your existing home.nix configuration
   home.username = "mark";
   home.homeDirectory = "/home/mark";
   home.enableNixpkgsReleaseCheck = false;
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
   home.stateVersion = "25.11";
 
-  # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   programs.zsh = {
     enable = true;
@@ -31,6 +47,7 @@
   };
   programs.zsh.shellAliases = {
     cat = "bat";
+    ccat = "/run/current-system/sw/bin/cat";
     ls = "eza";
     grep = "rg";
   };

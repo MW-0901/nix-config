@@ -1,0 +1,31 @@
+services:
+  frc:
+    image: frc-dev:latest
+    build: .
+    container_name: frc-dev
+    network_mode: host
+    ipc: host
+    privileged: true
+    
+    environment:
+      # Wayland native support (no XWayland)
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY}
+      - XDG_RUNTIME_DIR=/run/user/1000
+      - QT_QPA_PLATFORM=wayland
+      - GDK_BACKEND=wayland
+      - ELECTRON_OZONE_PLATFORM_HINT=wayland
+      # Fallback to X11 if Wayland not available
+      - DISPLAY=${DISPLAY:-:0}
+      - XAUTHORITY=/tmp/.Xauthority
+      
+    volumes:
+      - /home/mark:/home/mark
+      - /run/user/1000:/run/user/1000
+      - /dev:/dev
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/tmp/.Xauthority:ro
+      - /:/host
+      
+    working_dir: /home/mark
+    user: "1000:1000"
+    command: sleep infinity

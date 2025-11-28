@@ -37,6 +37,9 @@
           pkgs.powertop
           pkgs.fastfetch
           pkgs.zed-editor
+          pkgs.docker-compose
+          pkgs.docker-buildx
+          pkgs.xhost
         ];
       };
 

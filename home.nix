@@ -33,9 +33,10 @@
       WantedBy = [ "graphical-session.target" ];
     };
   };
-  programs.direnv.enable = true;
-  programs.direnv.nix-direnv.enable = true;
-
+  programs.direnv = {
+     enable = true;
+     nix-direnv.enable = true;
+  };
   # Rest of your existing home.nix configuration
   home.username = "mark";
   home.homeDirectory = "/home/mark";
@@ -53,6 +54,9 @@
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
     enableCompletion = true;
+    sessionVariables = {
+        DIRENV_WARN_TIMEOUT = "1m";
+    };
   };
   programs.zsh.shellAliases = {
     cat = "bat";

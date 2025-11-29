@@ -41,7 +41,7 @@
       INTEL_GPU_BOOST_FREQ_ON_BAT = 800;
 
       WIFI_PWR_ON_AC = "off";
-      WIFI_PWR_ON_BAT = "on";
+      WIFI_PWR_ON_BAT = "off";
       WOL_DISABLE = "Y";
 
       SOUND_POWER_SAVE_ON_AC = 0;

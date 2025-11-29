@@ -10,6 +10,14 @@
     logReversePathDrops = true;
     logRefusedConnections = false;
   };
+  services.fail2ban = {
+    enable = true;
+    jails = {
+      sshd = {
+        enabled = true;
+      };
+    };
+  };
   services.clamav.daemon.enable = true;
   services.logrotate.enable = true;
   services.clamav.updater.enable = true;

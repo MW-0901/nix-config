@@ -10,6 +10,7 @@
       ./hardware-configuration.nix
       ./optimizations/power.nix
       ./optimizations/general.nix
+      ./optimizations/security.nix
       ./optimizations/disk.nix
       ./wpilib/wpilib.nix
     ];

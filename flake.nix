@@ -49,6 +49,9 @@
           pkgs.clang-tools
           pkgs.brave
           pkgs.nixd
+          pkgs.nftables
+          pkgs.lynis
+          pkgs.wl-clipboard-rs
         ];
       };
 

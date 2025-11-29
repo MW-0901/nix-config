@@ -48,6 +48,7 @@
           pkgs.clang
           pkgs.clang-tools
           pkgs.brave
+          pkgs.nixd
         ];
       };
 

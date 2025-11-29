@@ -5,6 +5,9 @@
   imports = [
     ./programs/neovim.nix
   ];
+
+  home.file."Projects/.keep".text = "";
+
   home.activation.xhost = lib.hm.dag.entryAfter ["xserver"] ''
     ${pkgs.xhost}/bin/xhost +local:docker
   '';

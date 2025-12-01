@@ -6,6 +6,10 @@
     ./programs/neovim.nix
   ];
 
+  home.packages = with pkgs; [
+    code-cursor
+  ];
+
   home.file."Projects/.keep".text = "";
 
   home.activation.xhost = lib.hm.dag.entryAfter ["xserver"] ''

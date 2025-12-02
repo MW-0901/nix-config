@@ -52,6 +52,7 @@
           pkgs.nftables
           pkgs.lynis
           pkgs.wl-clipboard-rs
+          pkgs.geekbench
         ];
       };
 

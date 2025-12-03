@@ -4,6 +4,7 @@
 
   imports = [
     ./programs/neovim.nix
+    ./desktop/niri.nix
   ];
 
   home.packages = with pkgs; [
@@ -16,7 +17,6 @@
     ${pkgs.xhost}/bin/xhost +local:docker
   '';
 
-  # Add this new section for the systemd service
   systemd.user.services.xhost-docker = {
     Unit = {
       Description = "Allow Docker containers to access X server";
@@ -28,7 +28,6 @@
       Type = "oneshot";
       ExecStart = "${pkgs.xhost}/bin/xhost +local:docker";
       RemainAfterExit = true;
-      # Restart if it fails
       Restart = "on-failure";
       RestartSec = "5s";
     };
@@ -41,8 +40,8 @@
      enable = true;
      nix-direnv.enable = true;
   };
-  # Rest of your existing home.nix configuration
-  home.username = "mark";
+
+home.username = "mark";
   home.homeDirectory = "/home/mark";
   home.enableNixpkgsReleaseCheck = false;
   home.stateVersion = "25.11";

@@ -49,7 +49,7 @@
           pkgs.docker-buildx
           pkgs.xhost
           pkgs.nixfmt
-	  pkgs.nil
+          pkgs.nil
           pkgs.clang
           pkgs.clang-tools
           pkgs.brave
@@ -58,6 +58,8 @@
           pkgs.lynis
           pkgs.wl-clipboard-rs
           pkgs.geekbench
+          pkgs.alacritty
+          pkgs.xwayland-satellite
         ];
       };
 
@@ -77,6 +79,7 @@
             home-manager.users.mark = {
                 imports = [
                     nvf.homeManagerModules.default
+                    niri.homeModules.niri
                     ./home.nix
                 ];
             };

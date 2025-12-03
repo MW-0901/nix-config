@@ -12,13 +12,12 @@
       ./optimizations/general.nix
       ./optimizations/security.nix
       ./optimizations/disk.nix
-      ./desktop/niri.nix
       ./wpilib/wpilib.nix
     ];
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
+  programs.niri.enable = true;
   security.pam.u2f = {
     enable = true;
     settings.cue = false;

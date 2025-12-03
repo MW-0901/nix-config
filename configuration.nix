@@ -12,6 +12,7 @@
       ./optimizations/general.nix
       ./optimizations/security.nix
       ./optimizations/disk.nix
+      ./desktop/niri.nix
       ./wpilib/wpilib.nix
     ];
   # Bootloader.

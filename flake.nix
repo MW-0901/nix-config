@@ -12,9 +12,14 @@
       url = "github:notashelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nvf, ... }:
+  outputs = { self, nixpkgs, home-manager, nvf, niri, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {

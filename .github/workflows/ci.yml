@@ -32,7 +32,6 @@ jobs:
 
       - name: Clean Nix store
         run: |
-          nix store gc --print-roots
           nix-collect-garbage -d || true
 
       - name: Check flake metadata

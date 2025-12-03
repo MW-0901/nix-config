@@ -60,6 +60,7 @@
           pkgs.geekbench
           pkgs.alacritty
           pkgs.xwayland-satellite
+          pkgs.mesa
         ];
       };
 

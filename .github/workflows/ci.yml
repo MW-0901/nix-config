@@ -38,11 +38,13 @@ jobs:
       - name: Check flake metadata
         run: nix flake metadata
 
-      - name: Check flake lock
-        run: git diff --exit-code flake.lock || echo "Warning: flake.lock has uncommitted changes"
+      - name: Check flake.lock
+        run: |
+          git diff --exit-code flake.lock || echo "Warning: flake.lock has uncommitted changes"
 
       - name: Evaluate all NixOS configurations
-        run: nix eval .#nixosConfigurations --apply 'x: "success"' || exit 1
+        run: |
+          nix eval .#nixosConfigurations --apply "x: 'success'" 
 
       - name: Test package builds (dry-run)
         run: |

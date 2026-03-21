@@ -1,0 +1,71 @@
+
+(setq remote-file-name-inhibit-locks t
+      tramp-use-scp-direct-remote-copying t
+      remote-file-name-inhibit-auto-save-visited t)
+(setq tramp-copy-size-limit (* 1024 1024)
+      tramp-verbose 2)
+(connection-local-set-profile-variables
+ 'remote-direct-async-process
+ '((tramp-direct-async-process . t)))
+
+(connection-local-set-profiles
+ '(:application tramp :protocol "scp")
+ 'remote-direct-async-process)
+
+(setq magit-commit-show-diff nil)
+
+(defun $lsp-unless-remote ()
+  (if (file-remote-p buffer-file-name)
+      (progn (eldoc-mode -1)
+             (setq-local completion-at-point-functions nil))
+    (lsp)))
+
+(defvar project-current-cache nil)
+(defun memoize-project-current (orig &optional prompt directory)
+  (memoize-remote (or directory
+                      project-current-directory-override
+                      default-directory)
+                  'project-current-cache orig prompt directory))
+
+(advice-add 'project-current :around #'memoize-project-current)
+
+(defvar magit-toplevel-cache nil)
+(defun memoize-magit-toplevel (orig &optional directory)
+  (memoize-remote (or directory default-directory)
+                  'magit-toplevel-cache orig directory))
+(advice-add 'magit-toplevel :around #'memoize-magit-toplevel)
+
+(defvar vc-git-root-cache nil)
+(defun memoize-vc-git-root (orig file)
+  (let ((value (memoize-remote (file-name-directory file) 'vc-git-root-cache orig file)))
+    
+    (when (null (cdr (car vc-git-root-cache)))
+      (setq vc-git-root-cache (cdr vc-git-root-cache)))
+    value))
+(advice-add 'vc-git-root :around #'memoize-vc-git-root)
+
+(defvar $counsel-git-cands-cache nil)
+(defun $memoize-counsel-git-cands (orig dir)
+  ($memoize-remote (magit-toplevel dir) '$counsel-git-cands-cache orig dir))
+(advice-add 'counsel-git-cands :around #'$memoize-counsel-git-cands)
+
+(defun memoize-remote (key cache orig-fn &rest args)
+  (if (and key
+           (file-remote-p key))
+      (if-let ((current (assoc key (symbol-value cache))))
+          (cdr current)
+        (let ((current (apply orig-fn args)))
+          (set cache (cons (cons key current) (symbol-value cache)))
+          current))
+    (apply orig-fn args)))
+
+(setq magit-branch-direct-configure nil)
+
+(setq magit-refresh-status-buffer nil)
+
+(setq magit-tramp-pipe-stty-settings 'pty)
+(with-eval-after-load 'tramp
+  (with-eval-after-load 'compile
+    (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options)))
+
+(provide 'tramp)

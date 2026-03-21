@@ -94,4 +94,10 @@
 
 (add-hook 'eshell-directory-change-hook 'my/eshell-auto-activate-venv)
 
+(add-hook 'eshell-directory-change-hook
+          (lambda ()
+            (if (file-remote-p default-directory)
+                (eat-eshell-mode -1)
+              (eat-eshell-mode 1))))
+
 (provide 'eat-shell)

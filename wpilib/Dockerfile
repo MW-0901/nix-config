@@ -49,9 +49,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN useradd -u 1000 -m -s /bin/bash mark
 
-RUN cd /tmp && aria2c https://packages.wpilib.workers.dev/installer/v2026.1.1/Linux/WPILib_Linux-2026.1.1.tar.gz
+RUN cd /tmp && aria2c https://packages.wpilib.workers.dev/installer/v2026.2.1/Linux/WPILib_Linux-2026.2.1.tar.gz
 RUN mkdir /wpilib
-RUN tar -xzvf /tmp/WPILib_Linux-2026.1.1.tar.gz -C /wpilib
+RUN tar -xzvf /tmp/WPILib_Linux-2026.2.1.tar.gz -C /wpilib
 
 RUN mkdir -p /home/mark/.wpilib_state && chown mark:mark /home/mark/.wpilib_state
 

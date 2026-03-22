@@ -102,7 +102,6 @@
           at
           cacert
           texlive.combined.scheme-medium
-          markdown
         ];
       };
 

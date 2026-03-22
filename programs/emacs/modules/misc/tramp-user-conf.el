@@ -7,6 +7,12 @@
 (setq tramp-copy-size-limit (* 1024 1024)
       tramp-verbose 2)
 
+(setq tramp-connection-timeout 10)
+
+(setq remote-file-name-inhibit-cache nil)
+(setq tramp-completion-reread-directory-timeout nil)
+(setq tramp-cache-read-persistent-data t)
+
 (connection-local-set-profile-variables
  'remote-direct-async-process
  '((tramp-direct-async-process . t)))
@@ -16,19 +22,26 @@
  'remote-direct-async-process)
 
 (setq magit-tramp-pipe-stty-settings 'pty)
+(setq magit-commit-show-diff nil)
+(setq magit-branch-direct-configure nil)
+(setq magit-refresh-status-buffer nil)
+
+;; Set PATH for remote shell sessions (not just TRAMP's internal lookup)
+(setq tramp-remote-process-environment
+      (cons "PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+            tramp-remote-process-environment))
 
 (with-eval-after-load 'tramp
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  (add-to-list 'tramp-remote-path "/bin")
+  (add-to-list 'tramp-remote-path "/usr/bin")
+  (add-to-list 'tramp-remote-path "/sbin")
+  (add-to-list 'tramp-remote-path "/usr/sbin")
+
   (with-eval-after-load 'compile
     (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options)))
 
 (remove-hook 'find-file-hook 'forge-bug-reference-setup)
-
- 
-(setq magit-commit-show-diff nil)
- 
-(setq magit-branch-direct-configure nil)
- 
-(setq magit-refresh-status-buffer nil)
 
 (defun $lsp-unless-remote ()
   (if (file-remote-p buffer-file-name)
@@ -47,55 +60,35 @@
           current))
     (apply orig-fn args)))
 
- 
+;; Memoize current project
 (defvar project-current-cache nil)
 (defun memoize-project-current (orig &optional prompt directory)
   (memoize-remote (or directory
                       project-current-directory-override
                       default-directory)
                   'project-current-cache orig prompt directory))
-
 (advice-add 'project-current :around #'memoize-project-current)
 
- 
+;; Memoize magit top level
 (defvar magit-toplevel-cache nil)
 (defun memoize-magit-toplevel (orig &optional directory)
   (memoize-remote (or directory default-directory)
                   'magit-toplevel-cache orig directory))
 (advice-add 'magit-toplevel :around #'memoize-magit-toplevel)
 
- 
+;; Memoize vc-git-root
 (defvar vc-git-root-cache nil)
 (defun memoize-vc-git-root (orig file)
   (let ((value (memoize-remote (file-name-directory file) 'vc-git-root-cache orig file)))
-    
     (when (null (cdr (car vc-git-root-cache)))
       (setq vc-git-root-cache (cdr vc-git-root-cache)))
     value))
 (advice-add 'vc-git-root :around #'memoize-vc-git-root)
 
- 
+;; Memoize counsel git candidates
 (defvar $counsel-git-cands-cache nil)
 (defun $memoize-counsel-git-cands (orig dir)
   ($memoize-remote (magit-toplevel dir) '$counsel-git-cands-cache orig dir))
 (advice-add 'counsel-git-cands :around #'$memoize-counsel-git-cands)
-
-(with-eval-after-load 'tramp
-  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-  
-  (with-eval-after-load 'compile
-    (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options)))
-
-(setq tramp-connection-timeout 10)
-
-(setq remote-file-name-inhibit-cache nil)
-(setq tramp-completion-reread-directory-timeout nil)
-
-(setq tramp-cache-read-persistent-data t)
-
-(add-to-list 'tramp-remote-path "/bin")
-(add-to-list 'tramp-remote-path "/usr/bin")
-(add-to-list 'tramp-remote-path "/sbin")
-(add-to-list 'tramp-remote-path "/usr/sbin")
 
 (provide 'tramp-user-conf)

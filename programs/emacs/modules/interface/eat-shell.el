@@ -57,7 +57,6 @@
 
 (add-hook 'eshell-mode-hook
           (lambda ()
-            (setq mode-line-format nil)
             (display-line-numbers-mode -1)
             (setq-local scroll-margin 0)
             (setq-local company-backends '(company-capf))

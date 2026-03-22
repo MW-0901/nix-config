@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+sudo nixos-generate-config --show-hardware-config > "$DIR/hardware-configuration.nix"
+sudo nixos-rebuild switch --flake ~/config#nixos

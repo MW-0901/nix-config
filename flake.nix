@@ -102,6 +102,7 @@
           at
           cacert
           texlive.combined.scheme-medium
+          pandoc
         ];
       };
 

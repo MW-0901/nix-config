@@ -65,6 +65,11 @@
 
 (require 'lsp-mode)
 
+(use-package markdown-mode
+  :mode "\\.md\\'"
+  :config
+  (setq markdown-command "pandoc"))
+
 (dolist (module '(ui
                   editing
                   completion

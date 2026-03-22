@@ -82,4 +82,4 @@
 
 
 
-(provide 'tramp)
+(provide 'tramp-user-conf)

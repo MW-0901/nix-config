@@ -81,5 +81,5 @@
                   news
                   canvas
                   circe-irc
-                  tramp))
+                  tramp-user-conf))
   (require module))

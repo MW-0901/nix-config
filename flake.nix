@@ -103,6 +103,7 @@
           cacert
           texlive.combined.scheme-medium
           pandoc
+          tree-sitter
         ];
       };
 

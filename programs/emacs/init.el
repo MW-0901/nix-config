@@ -70,6 +70,9 @@
   :config
   (setq markdown-command "pandoc"))
 
+(setq treesit-extra-load-path
+      '("/run/current-system/sw/lib"))
+
 (dolist (module '(ui
                   editing
                   completion

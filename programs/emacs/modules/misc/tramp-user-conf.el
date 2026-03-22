@@ -93,4 +93,9 @@
 
 (setq tramp-cache-read-persistent-data t)
 
+(add-to-list 'tramp-remote-path "/bin")
+(add-to-list 'tramp-remote-path "/usr/bin")
+(add-to-list 'tramp-remote-path "/sbin")
+(add-to-list 'tramp-remote-path "/usr/sbin")
+
 (provide 'tramp-user-conf)

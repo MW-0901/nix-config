@@ -10,8 +10,11 @@
 (require 'envrc)
 (require 'pyvenv)
 
-(eat-eshell-mode 1)
-(eat-eshell-visual-command-mode 1)
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (unless (file-remote-p default-directory)
+              (eat-eshell-mode 1)
+              (eat-eshell-visual-command-mode 1))))
 
 (setq eat-enable-yank-to-terminal t)
 (global-set-key (kbd "C-c H") 'eat)

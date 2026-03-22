@@ -10,12 +10,6 @@
 (require 'envrc)
 (require 'pyvenv)
 
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (unless (file-remote-p default-directory)
-              (eat-eshell-mode 1)
-              (eat-eshell-visual-command-mode 1))))
-
 (setq eat-enable-yank-to-terminal t)
 (global-set-key (kbd "C-c H") 'eat)
 (global-set-key (kbd "C-c h") 'eshell)
@@ -33,7 +27,8 @@
       eshell-hist-ignoredups t)
 
 (defun my/eshell-prompt ()
-  (let ((git-branch (when (and (fboundp 'magit-get-current-branch)
+  (let ((git-branch (when (and (not (file-remote-p default-directory))
+                               (fboundp 'magit-get-current-branch)
                                (magit-get-current-branch))
                       (concat " ‹" (magit-get-current-branch) "›"))))
     (concat
@@ -55,8 +50,14 @@
   (let ((inhibit-read-only t))
     (delete-region (point-min) (point-at-bol))))
 
+(defun my/eshell-maybe-enable-eat ()
+  (when (not (file-remote-p default-directory))
+    (eat-eshell-mode 1)
+    (eat-eshell-visual-command-mode 1)))
+
 (add-hook 'eshell-mode-hook
           (lambda ()
+            (setq mode-line-format nil)
             (display-line-numbers-mode -1)
             (setq-local scroll-margin 0)
             (setq-local company-backends '(company-capf))
@@ -72,7 +73,8 @@
             (when (require 'eshell-z nil t)
               (require 'eshell-z))
             (when (require 'eshell-syntax-highlighting nil t)
-              (eshell-syntax-highlighting-mode 1))))
+              (eshell-syntax-highlighting-mode 1))
+            (run-at-time 0.1 nil #'my/eshell-maybe-enable-eat)))
 
 (with-eval-after-load 'eshell
   (eshell/alias "ls" "eza $*")
@@ -95,11 +97,5 @@
                           (concat venv-dir ".virtualenv"))))))
 
 (add-hook 'eshell-directory-change-hook 'my/eshell-auto-activate-venv)
-
-(add-hook 'eshell-directory-change-hook
-          (lambda ()
-            (if (file-remote-p default-directory)
-                (eat-eshell-mode -1)
-              (eat-eshell-mode 1))))
 
 (provide 'eat-shell)

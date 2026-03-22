@@ -80,5 +80,6 @@
                   eat-shell
                   news
                   canvas
-                  circe-irc))
+                  circe-irc
+                  tramp))
   (require module))

@@ -110,6 +110,14 @@
           open-floating = true;
           border.width = 0;
         }
+        {
+          matches = [ { app-id = "snes9x"; } ];
+          opacity = 1.0;
+          focus-ring.enable = false;
+          draw-border-with-background = false;
+          open-floating = false;
+          border.width = 0;
+        }
       ];
     };
   };

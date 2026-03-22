@@ -76,8 +76,13 @@
               (eshell-syntax-highlighting-mode 1))
             (run-at-time 0.1 nil #'my/eshell-maybe-enable-eat)))
 
+(defun eshell/ls (&rest args)
+  "Use eza locally, plain ls on remote hosts."
+  (if (file-remote-p default-directory)
+      (eshell-named-command "/bin/ls" args)
+    (eshell-named-command "eza" args)))
+
 (with-eval-after-load 'eshell
-  (eshell/alias "ls" "eza $*")
   (eshell/alias "rebuild" "sudo nixos-rebuild switch --flake ~/config#nixos")
   (eshell/alias "e" "find-file $1"))
 

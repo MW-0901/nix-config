@@ -4,7 +4,7 @@
       tramp-use-scp-direct-remote-copying t
       remote-file-name-inhibit-auto-save-visited t)
 
-(setq tramp-copy-size-limit (* 1024 1024) ;; 1MB
+(setq tramp-copy-size-limit (* 1024 1024)
       tramp-verbose 2)
 
 (connection-local-set-profile-variables
@@ -23,11 +23,11 @@
 
 (remove-hook 'find-file-hook 'forge-bug-reference-setup)
 
-;; don't show the diff by default in the commit buffer. Use `C-c C-d' to display it
+ 
 (setq magit-commit-show-diff nil)
-;; don't show git variables in magit branch
+ 
 (setq magit-branch-direct-configure nil)
-;; don't automatically refresh the status buffer after running a git command
+ 
 (setq magit-refresh-status-buffer nil)
 
 (defun $lsp-unless-remote ()
@@ -47,7 +47,7 @@
           current))
     (apply orig-fn args)))
 
-;; Memoize current project
+ 
 (defvar project-current-cache nil)
 (defun memoize-project-current (orig &optional prompt directory)
   (memoize-remote (or directory
@@ -57,29 +57,40 @@
 
 (advice-add 'project-current :around #'memoize-project-current)
 
-;; Memoize magit top level
+ 
 (defvar magit-toplevel-cache nil)
 (defun memoize-magit-toplevel (orig &optional directory)
   (memoize-remote (or directory default-directory)
                   'magit-toplevel-cache orig directory))
 (advice-add 'magit-toplevel :around #'memoize-magit-toplevel)
 
-;; memoize vc-git-root
+ 
 (defvar vc-git-root-cache nil)
 (defun memoize-vc-git-root (orig file)
   (let ((value (memoize-remote (file-name-directory file) 'vc-git-root-cache orig file)))
-    ;; sometimes vc-git-root returns nil even when there is a root there
+    
     (when (null (cdr (car vc-git-root-cache)))
       (setq vc-git-root-cache (cdr vc-git-root-cache)))
     value))
 (advice-add 'vc-git-root :around #'memoize-vc-git-root)
 
-;; memoize all git candidates in the current project
+ 
 (defvar $counsel-git-cands-cache nil)
 (defun $memoize-counsel-git-cands (orig dir)
   ($memoize-remote (magit-toplevel dir) '$counsel-git-cands-cache orig dir))
 (advice-add 'counsel-git-cands :around #'$memoize-counsel-git-cands)
 
+(with-eval-after-load 'tramp
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  
+  (with-eval-after-load 'compile
+    (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options)))
 
+(setq tramp-connection-timeout 10)
+
+(setq remote-file-name-inhibit-cache nil)
+(setq tramp-completion-reread-directory-timeout nil)
+
+(setq tramp-cache-read-persistent-data t)
 
 (provide 'tramp-user-conf)

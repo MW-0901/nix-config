@@ -73,6 +73,8 @@
 (setq treesit-extra-load-path
       '("/run/current-system/sw/lib"))
 
+(global-set-key (kbd "C-c c") #'compile)
+
 (dolist (module '(ui
                   editing
                   completion

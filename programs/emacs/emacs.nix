@@ -43,7 +43,6 @@ in
       flycheck
       helpful
       embark-consult
-      aggressive-indent
       orderless
       python-mode
       svelte-mode

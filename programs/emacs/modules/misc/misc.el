@@ -10,7 +10,4 @@
 (require 'git-timemachine)
 (global-set-key (kbd "C-c t") 'git-timemachine)
 
-(require 'compile)
-(global-set-key (kbd "C-c c") #'compile)
-
 (provide 'misc)

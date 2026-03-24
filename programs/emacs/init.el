@@ -61,6 +61,7 @@
   (add-to-list 'load-path (expand-file-name "interface" modules-dir))
   (add-to-list 'load-path (expand-file-name "languages" modules-dir))
   (add-to-list 'load-path (expand-file-name "misc" modules-dir))
+  (add-to-list 'load-path (expand-file-name "org" modules-dir))
   (message "Loading modules from: %s" modules-dir))
 
 (require 'lsp-mode)
@@ -73,7 +74,8 @@
 (setq treesit-extra-load-path
       '("/run/current-system/sw/lib"))
 
-(global-set-key (kbd "C-c c") #'compile)
+(require 'compile)
+(global-set-key (kbd "C-c C") 'compile)
 
 (dolist (module '(ui
                   editing
@@ -91,5 +93,6 @@
                   news
                   canvas
                   circe-irc
-                  tramp-user-conf))
+                  tramp-user-conf
+                  capture))
   (require module))
